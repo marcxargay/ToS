@@ -1,0 +1,118 @@
+<html>
+	<head> 
+		<title>Exemples de Canvas</title>
+		<style>
+			canvas {
+				border: 1px dashed grey;	
+				cursor: crosshair;	
+				margin-right: 20px;			
+				position: absolute;
+			}
+			
+			#canvas1 {
+				top: 10px;
+				left: 10px;
+			}
+
+			#canvas2 {
+				top: 10px;
+				left: 350px;
+			}
+
+			#canvas3 {
+				top: 260px;
+				left: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="canvas1" width="320" height="240"></canvas>
+		<canvas id="canvas2" width="320" height="240"></canvas>
+		<canvas id="canvas3" width="640" height="480"></canvas>
+		<script>
+			var c1 = document.getElementById("canvas1");
+			var ctx1 = c1.getContext("2d");
+		
+			var c2 = document.getElementById("canvas2");
+			var ctx2 = c2.getContext("2d");
+
+			var c3 = document.getElementById("canvas3");
+			var ctx3 = c3.getContext("2d");
+
+			function pintarLinia1(e)
+			{
+				var x = e.pageX - 10;
+				var y = e.pageY - 10;
+				
+				ctx1.clearRect(0, 0, c1.width, c1.height);			
+				
+				ctx1.lineWidth = 4;
+				
+				ctx1.beginPath();
+				ctx1.strokeStyle = "red";
+				ctx1.moveTo(0, 0);
+				ctx1.lineTo(x, y);
+				ctx1.stroke();
+				
+				ctx1.beginPath();
+				ctx1.strokeStyle = "green";
+				ctx1.moveTo(c1.width, 0);
+				ctx1.lineTo(x, y);
+				ctx1.stroke();
+
+				ctx1.beginPath();
+				ctx1.strokeStyle = "blue";
+				ctx1.moveTo(0, c1.height);
+				ctx1.lineTo(x, y);
+				ctx1.stroke();
+
+				ctx1.beginPath();
+				ctx1.strokeStyle = "orange";
+				ctx1.moveTo(c1.width, c1.height);
+				ctx1.lineTo(x, y);
+				ctx1.stroke();
+			}
+			
+			function pintarLinia2(e)
+			{
+				x = e.pageX - 350;
+				y = e.pageY - 10;
+				
+				ctx2.clearRect(0, 0, c2.width, c2.height);
+								
+				ctx2.beginPath();
+				ctx2.fillStyle = "red";
+				ctx2.moveTo(0, 0);
+				ctx2.lineTo(x, y);
+				ctx2.lineTo(c2.width, 0);
+				ctx2.fill();
+
+				ctx2.beginPath();
+				ctx2.fillStyle = "green";
+				ctx2.moveTo(c2.width, 0);
+				ctx2.lineTo(x, y);
+				ctx2.lineTo(c2.width, c2.height);
+				ctx2.fill();
+
+				ctx2.beginPath();
+				ctx2.fillStyle = "blue";
+				ctx2.moveTo(c2.width, c2.height);
+				ctx2.lineTo(x, y);
+				ctx2.lineTo(0, c2.height);
+				ctx2.fill();
+
+				ctx2.beginPath();
+				ctx2.fillStyle = "orange";
+				ctx2.moveTo(0, c2.height);
+				ctx2.lineTo(x, y);
+				ctx2.lineTo(0, 0);
+				ctx2.fill();
+
+				ctx3.drawImage( c2, 0, 0, 640, 480 );				
+			}
+			
+			c1.onmousemove = pintarLinia1;
+			c2.onmousemove = pintarLinia2;
+		</script>
+	</body>
+</html>

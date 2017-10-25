@@ -1,0 +1,100 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>AJAX contra servidor local</title>
+		<style>
+		</style>
+	</head>
+	<body>
+		<!-- Interfície de l'aplicació -->
+		<h1>Cercador de codis postals</h1>
+		<p>Aquesta aplicació obté llistes d'un servidor on estan emmagatzemades en format XML.</p>
+		<select id="llistaProvincies"></select>
+		<select id="llistaMunicipis"></select>
+		<script>
+			function obtenirLlistaProvincies()
+			{
+				// Creem un objecte de petició d'intercanvi de dades
+				var xmlhttp = new XMLHttpRequest();
+				
+				// Associem una funció per comprovar quan la petició ha canviat d'estat
+				xmlhttp.onreadystatechange = function() 
+				{
+					// Si la petició s'ha completat correctament rebrem un codi 200 i serem a l'estat 4
+					if ( xmlhttp.readyState == 4 && xmlhttp.status == 200 )
+					{
+						// Tenim les dades rebudes del servidor dins de xmlhttp.responseText
+						// Com que sabem que estan en format JSON convertim la resposta en 
+						// un objecte que guardem a la variable "resposta"
+						resposta = JSON.parse( xmlhttp.responseText );
+
+						// Carreguem les dades retornades a la llista de provincies
+						omplirLlista(document.getElementById("llistaProvincies"), resposta.provincies);
+						
+						// Emplenem la llista de municipis per la provincia selecionada
+						obtenirLlistaMunicipis();
+					}
+				}
+				// Indiquem el mètode (GET) i la URL del servidor que ens retornarà les dades
+				// El tercer paràmetre indica que la crida és asíncrona, per tant l'execució de
+				// la resta del codi JavaScript no s'atura per esperar la resposta
+				xmlhttp.open("GET", "llistes.php?provincies", true);
+
+				// Llancem la petició assíncrona al servidor
+				xmlhttp.send();				
+			}
+			
+			function obtenirLlistaMunicipis()
+			{
+				provincia = document.getElementById("llistaProvincies").value;				
+
+				// Creem un objecte de petició d'intercanvi de dades
+				var xmlhttp = new XMLHttpRequest();
+				
+				// Associem una funció per comprovar quan la petició ha canviat d'estat
+				xmlhttp.onreadystatechange = function() 
+				{
+					// Si la petició s'ha completat correctament rebrem un codi 200 i serem a l'estat 4
+					if ( xmlhttp.readyState == 4 && xmlhttp.status == 200 )
+					{
+						// Tenim les dades rebudes del servidor dins de xmlhttp.responseText
+						// Com que sabem que estan en format JSON convertim la resposta en 
+						// un objecte que guardem a la variable "resposta"
+						resposta = JSON.parse( xmlhttp.responseText );
+						
+						// Carreguem les dades retornades a la llista de municipis
+						omplirLlista(document.getElementById("llistaMunicipis"), resposta.municipis);
+					}
+				}
+				// Indiquem el mètode (GET) i la URL del servidor que ens retornarà les dades
+				// El tercer paràmetre indica que la crida és asíncrona, per tant l'execució de
+				// la resta del codi JavaScript no s'atura per esperar la resposta
+				xmlhttp.open("GET", "llistes.php?p=" + provincia, true);
+
+				// Llancem la petició assíncrona al servidor
+				xmlhttp.send();				
+			}
+			
+			function omplirLlista(idLlista, dadesLlista)
+			{
+				// Buidem la llista actual
+				idLlista.options.length = 0;
+				
+				for (var i=0; i < dadesLlista.length; i++)
+				{
+					// Creem els nous elements de la llista
+					var op = document.createElement("option");
+					op.innerHTML = dadesLlista[i];
+					op.value = dadesLlista[i];
+					idLlista.appendChild(op);
+				}
+			}
+			
+			// Associem un esdeveniment per actualitzar la llista de municipis quan canviem de provincia
+			document.getElementById( "llistaProvincies" ).onchange = obtenirLlistaMunicipis;
+			
+			// Iniciem l'aplicació demanant la llista de provincies al servidor
+			obtenirLlistaProvincies();						
+		</script>
+	</body>
+</html>

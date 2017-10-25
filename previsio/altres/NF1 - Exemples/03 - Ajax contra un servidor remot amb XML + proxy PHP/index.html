@@ -1,0 +1,130 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>AJAX contra servidor remot + XML + proxy PHP</title>
+		<style>
+			html {
+				font-family: Arial;
+				font-size: 14pt;
+				background-color: darkred;
+				color: white;
+			}
+
+			div {
+				font-weight: bold;
+			}
+			
+			#decoracio {
+				position: absolute;
+				top: -100px;
+				left: 50px;
+				opacity: 0.15;
+				font-size: 500px;
+				z-index: -1;
+				-webkit-transform: rotate(-15deg);
+			}
+			
+			input[type=text] {
+				text-align: right;
+				font-size: 14pt;
+				margin-bottom: 8px;
+				padding: 4px 8px;
+				border-radius: 8px;
+				border: 0px;
+				color: white;
+				background-color: rgba(255, 255, 255, 0.5);
+				width: 200px;
+			}
+			
+			button {
+				font-size: 12pt;
+				font-weight: bold;
+				padding: 4px 16px;
+				border-radius: 8px;
+				border: 0px;
+				cursor: pointer;
+				margin-top: 1em;
+				color: darkred;
+				background-color: white;
+			}
+			
+			#valorDivisa {
+				font-size: 0.75em;				
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Interfície de l'aplicació -->
+		<h1>Conversor de moneda</h1>
+		<p>Aquesta aplicació converteix preus de dòlars a euros amb el canvi actual.</p>
+		<span id="valorDivisa">&nbsp;</span>
+		<div id="divisa1">
+			<input id="quantitat1" type="text" value="250.00"> USD
+		</div>
+		<div id="divisa2">
+			<input id="quantitat2" type="text" disabled> EUR
+		</div>
+		<button id="convertir">Convertir</button>
+		<div id="decoracio">$€</div>
+		<script>
+			// Associem una funció a l'esdeveniment clic del botó
+			document.getElementById("convertir").onclick = function() 
+			{
+				// Cridem la funció que farà la crida AJAX per obtenir el canvi USD/EUR actual
+				obteValorDivisa();
+			}
+			
+			function obteValorDivisa()
+			{
+				// Creem un objecte de petició d'intercanvi de dades
+				xmlhttp = new XMLHttpRequest();
+				
+				// Associem una funció per comprovar quan la petició ha canviat d'estat
+				xmlhttp.onreadystatechange = function() 
+				{
+					// Si la petició s'ha completat correctament rebrem un codi 200 i serem a l'estat 4
+					if ( xmlhttp.readyState == 4 && xmlhttp.status == 200 )
+					{
+						// Tenim les dades rebudes del servidor dins de xmlhttp
+						// Com que sabem que estan en format XML, fem servir responseXML
+						// per poder accedir als nodes del document XML a través de "documentElement"
+						x=xmlhttp.responseXML.documentElement;
+
+						// Recorrem els nodes fills de l'arbre XML fins arribar al que volem (USD)
+						// i llegim el valor de l'atribut "rate"
+						valor = x.getElementsByTagName("Cube")[0].children[0].children[0].attributes["rate"].value;
+
+						// Cridem a la funció que escriurà per pantalla el valor rebut
+						escriureValor(valor);
+					}
+				}
+				// Indiquem la URL del servidor que ens retornarà les dades
+				// Si intentem obrir la URL amb AJAX no podrem i el navegador ens retornarà un error
+				// "No 'Access-Control-Allow-Origin' header is present on the requested resource."
+				// ja que només permet peticions assíncrones des del seu propi domini
+				
+				// xmlhttp.open("GET", "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml", true);
+
+				// Per tant hem de fer la petició a un script de PHP que es descarregui el
+				// XML i ens el retorni des del nostre mateix domini
+				
+				xmlhttp.open("GET", "proxy.php", true);
+				
+				// Finalment llancem la petició assíncrona al servidor remot
+				xmlhttp.send();				
+			}
+			
+			function escriureValor(valorEUR)
+			{
+				// Mostrem la informació del valor del canvi per 1 EUR
+				document.getElementById("valorDivisa").innerHTML = "1 EUR = " + valorEUR + " USD";
+				
+				// Llegim el valor en dòlars a convertir a euros
+				var quantitatUSD = document.getElementById("quantitat1").value;
+				
+				// Fem el càlcul amb el valor de divisa obtingut i l'arrodonim a 2 decimals
+				document.getElementById("quantitat2").value = Math.round( quantitatUSD / valorEUR * 100 ) / 100;
+			}
+		</script>
+	</body>
+</html>

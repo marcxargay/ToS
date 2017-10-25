@@ -1,0 +1,55 @@
+<html>
+	<head>
+		<title>Exemples de Canvas</title>
+		<style>
+			canvas {
+				border: 1px dashed grey;	
+				margin-right: 20px;			
+				position: absolute; 
+			}
+			
+			#canvas1 {
+				top: 10px;
+				left: 10px;
+			}
+
+			#canvas2 {
+				top: 10px;
+				left: 350px;
+			}
+
+		</style>
+	</head>
+	<body>
+		<canvas id="canvas1" width="320" height="240"></canvas>
+		<canvas id="canvas2" width="320" height="240"></canvas>
+		<script>
+			
+			var ctx1 = document.getElementById( "canvas1" ).getContext( "2d" );
+			var ctx2 = document.getElementById( "canvas2" ).getContext( "2d" );
+
+			ctx2.globalCompositeOperation = "lighter";
+
+			cercles( ctx1 );
+			cercles( ctx2 );
+			
+			function cercles( ctx )
+			{
+				ctx.fillStyle = "rgb(255,0,0)";
+				ctx.beginPath();
+				ctx.arc( 128, 90, 64, 0, 2 * Math.PI );		
+				ctx.fill();
+
+				ctx.fillStyle = "rgb(0,255,0)";
+				ctx.beginPath();
+				ctx.arc( 192, 90, 64, 0, 2 * Math.PI );		
+				ctx.fill();
+
+				ctx.fillStyle = "rgb(0,0,255)";
+				ctx.beginPath();
+				ctx.arc( 160, 150, 64, 0, 2 * Math.PI );		
+				ctx.fill();
+			}
+		</script>
+	</body>
+</html>

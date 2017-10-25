@@ -1,0 +1,85 @@
+<html>
+	<head>
+		<style>
+			body {
+				margin: 0px;
+			}
+		</style>
+	</head> 
+	<body>
+		<canvas id="canvas"></canvas>
+		<script>
+			img = new Image();
+			img.src = "lionhead.jpg";
+			
+			var canvas = document.getElementById("canvas");
+			var ctx = canvas.getContext("2d");
+			
+			canvas.width = 800;
+			canvas.height = 600;
+			inici = 0;
+			angle = 0;
+			
+			var aigua = [];
+			var num_gotes = 250;
+			for(var i = 0; i < num_gotes; i++)
+			{
+				aigua.push( new gota() );
+			}
+			
+			function gota()
+			{
+				this.vX = ( Math.random() * 0.5 ) - 0.25;
+				this.vY = ( Math.random() * 7 ) + 3;
+				
+				// Les coordenades d'inici són el punt de sortida de l'aigua
+				this.pX = 403;
+				this.pY = 320;
+
+				this.mida = Math.random() * 15 + 10;
+			}
+			
+			function draw()
+			{
+				// Pintem tot el fons de la pantalla amb la imatge per esborrar l'escena
+				ctx.drawImage( img, 0, 0, 800, 600 );
+				
+				if ( inici < aigua.length) inici++;
+				
+				for( var i = 0; i < inici; i++ )
+				{
+					var g = aigua[ i ];
+
+					if (i % 20 == 0) 
+						color = "200, 200, 255";
+					else
+						// color = "128, 192, 255";
+						color = "255, 255, 255";
+						
+					var degradat = ctx.createRadialGradient( g.pX, g.pY, 0, g.pX, g.pY, g.mida );
+					degradat.addColorStop( 0, "rgba(" + color + ", 0.25)" );
+					degradat.addColorStop( 0.75, "rgba(" + color + ", 0.25)" );
+					degradat.addColorStop( 1, "rgba(" + color + ", 0)" );
+					ctx.fillStyle = degradat;
+
+					ctx.beginPath();
+					ctx.arc( g.pX, g.pY, g.mida, 0, 2 * Math.PI );
+					ctx.fill();
+					
+					g.mida = g.mida + 0.2;
+					g.pX += g.vX;
+					g.pY += g.vY;
+					
+					if( g.pY > canvas.height )
+					{
+						aigua[ i ] = new gota();
+					}
+				}
+				
+				// document.getElementById("canvas").style.WebkitTransform = "rotate("+(angle--)+"deg)";
+			}
+			
+			setInterval( draw, 25 );
+		</script>
+	</body>
+</html>

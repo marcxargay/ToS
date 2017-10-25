@@ -1,0 +1,79 @@
+<html>
+  <head>
+    <title>Exemple d'AJAX amb jQuery</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script type="text/JavaScript" src="jquery.min.js"></script>
+  </head>
+  <style>
+    body {
+      font-family: Arial;
+    }
+    
+    span {
+      position: relative;
+      top: -14px;
+      font-size: 20pt;
+      font-weight: bold;
+      color: rgb(100,130,175); 
+    }
+    
+    img {
+      margin-right: 16px;
+    }
+    
+    div {
+      width: 200px;
+      height: 48px;
+      padding: 10px;
+      border: 3px solid rgb(180,210,255);
+      border-radius: 16px;
+      margin-bottom: 16px;
+      margin-right: 16px;
+      position: relative;
+      float: left;
+    }                        
+
+    div:hover {
+      box-shadow: 6px 6px 8px rgb(140,170,215);      
+      cursor: pointer;
+      top: -4px;
+    }                        
+
+    p {
+      width: 684px;
+      height: 200px;
+      padding: 10px;
+      border: 3px solid rgb(180,180,180);
+      border-radius: 16px;
+      position: relative;
+      top: 70px;
+    }                        
+
+  </style>
+  <script>
+    function actualitzarDades( item )
+    {
+		$( "#informacioItem" ).load( "infoItem.php", { valor: item } );
+    }
+  </script>
+  <body>
+    <br>
+    <span>Selecciona un article per veure'n més informació</span><br>
+
+	<script>
+		function creaArticle(index, imatge)
+		{
+			document.write( "<div class='article' onClick='actualitzarDades(" + index + ");'>" );
+			document.write( "<img src='" + imatge + ".png'>" );
+			document.write( "<span>Article " + index + "</span>" );
+			document.write( "</div>" );
+		}
+		
+		creaArticle( 1, "boxR" );
+		creaArticle( 2, "boxG" );
+		creaArticle( 3, "boxB" );
+	</script>
+
+    <p id='informacioItem'></p>
+  </body>
+</html>

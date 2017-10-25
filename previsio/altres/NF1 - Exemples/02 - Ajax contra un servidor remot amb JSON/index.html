@@ -1,0 +1,125 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>AJAX contra servidor remot + JSON</title>
+		<style>
+			html {
+				font-family: Arial;
+				font-size: 14pt;
+				background-color: darkblue;
+				color: white;
+			}
+
+			div {
+				font-weight: bold;
+			}
+			
+			#decoracio {
+				position: absolute;
+				top: -100px;
+				left: 50px;
+				opacity: 0.15;
+				font-size: 500px;
+				z-index: -1;
+				-webkit-transform: rotate(-15deg);
+			}
+			
+			input[type=text] {
+				text-align: right;
+				font-size: 14pt;
+				margin-bottom: 8px;
+				padding: 4px 8px;
+				border-radius: 8px;
+				border: 0px;
+				color: white;
+				background-color: rgba(255, 255, 255, 0.5);
+				width: 200px;
+			}
+			
+			button {
+				font-size: 12pt;
+				font-weight: bold;
+				padding: 4px 16px;
+				border-radius: 8px;
+				border: 0px;
+				cursor: pointer;
+				margin-top: 1em;
+				color: darkblue;
+				background-color: white;
+			}
+			
+			#valorDivisa {
+				font-size: 0.75em;				
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Interfície de l'aplicació -->
+		<h1>Conversor de moneda</h1>
+		<p>Aquesta aplicació converteix preus de dòlars a euros amb el canvi actual.</p>
+		<span id="valorDivisa">&nbsp;</span>
+		<div id="divisa1">
+			<input id="quantitat1" type="text" value="250.00"> USD
+		</div>
+		<div id="divisa2">
+			<input id="quantitat2" type="text" disabled> EUR
+		</div>
+		<button id="convertir">Convertir</button>
+		<div id="decoracio">$€</div>
+		<script>
+			// Associem una funció a l'esdeveniment clic del botó
+			document.getElementById("convertir").onclick = function() 
+			{
+				// Cridem la funció que farà la crida AJAX per obtenir el canvi USD/EUR actual
+				obteValorDivisa();
+			}
+			
+			function obteValorDivisa()
+			{
+				// Clau personal que hem obtingut per accedir a la API de OpenExchangeRates.org
+				var api_key = "2d617e9d6a8d4302a9fa60118065a68a";
+				
+				// Creem un objecte de petició d'intercanvi de dades
+				xmlhttp = new XMLHttpRequest();
+				
+				// Associem una funció per comprovar quan la petició ha canviat d'estat
+				xmlhttp.onreadystatechange = function() 
+				{
+					// Si la petició s'ha completat correctament rebrem un codi 200 i serem a l'estat 4
+					if ( xmlhttp.readyState == 4 && xmlhttp.status == 200 )
+					{
+						// Tenim les dades rebudes del servidor dins de xmlhttp.responseText
+						// Com que sabem que estan en format JSON convertim la resposta en 
+						// un objecte que guardem a la variable "valorDivises"
+						valorDivises = JSON.parse( xmlhttp.responseText );
+						
+						// Cridem a la funció que escriurà per pantalla el valor rebut
+						// Com a paràmetre passem només el valor de la conversió a euros,
+						// com que és un objecte podem llegir les seves propietats						
+						escriureValor(valorDivises.rates.EUR);
+					}
+				}
+				// Indiquem el mètode (GET) i la URL del servidor que ens retornarà les dades
+				// La URL dependrà de cada servei web concret
+				// El tercer paràmetre indica que la crida és asíncrona, per tant l'execució de
+				// la resta del codi JavaScript no s'atura per esperar la resposta
+				xmlhttp.open("GET", "http://openexchangerates.org/api/latest.json?app_id=" + api_key, true);
+				
+				// Llancem la petició assíncrona al servidor remot
+				xmlhttp.send();				
+			}
+			
+			function escriureValor(valorEUR)
+			{
+				// Mostrem la informació del valor del canvi per 1 USD
+				document.getElementById("valorDivisa").innerHTML = "1 USD = " + valorEUR + " EUR";
+				
+				// Llegim el valor en dòlars a convertir a euros
+				var quantitatUSD = document.getElementById("quantitat1").value;
+				
+				// Fem el càlcul amb el valor de divisa obtingut i l'arrodonim a 2 decimals
+				document.getElementById("quantitat2").value = Math.round( quantitatUSD * valorEUR * 100 ) / 100;
+			}
+		</script>
+	</body>
+</html>

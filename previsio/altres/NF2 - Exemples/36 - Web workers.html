@@ -1,0 +1,47 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Web workers</title>
+		<style>
+			span {
+				font-family: Arial;
+				font-size: 40px;
+				background-color: orange;
+				padding: 4px 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="canvas" width="800" height="600"></canvas>
+		<p>
+			<button id="start">INICIAR</button>
+			<button id="stop">ATURAR</button>
+		</p>
+		<script>
+			var ctx = document.getElementById( "canvas" ).getContext( "2d" );
+
+			var w = new Worker( "./36 - Web workers.js" );
+
+			document.getElementById( "start" ).onclick = function () 
+			{
+				w.postMessage( { maxW: 800, maxH: 600, actiu: true } );
+			}
+		
+			document.getElementById( "stop" ).onclick = function () 
+			{
+				w.postMessage( { actiu: false } );
+			}
+			
+			
+			w.onmessage = function( event )
+			{
+				var info = event.data;
+				
+				ctx.strokeStyle= "black";
+				ctx.moveTo( info.oX, info.oY );
+				ctx.lineTo( info.dX, info.dY );
+				ctx.stroke();
+			};
+		</script>		
+	</body>
+</html>

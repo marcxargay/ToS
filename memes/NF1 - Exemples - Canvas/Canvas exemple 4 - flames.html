@@ -1,0 +1,168 @@
+<html>
+	<head>
+		<style>
+			body {
+				margin: 0px;
+			}
+
+			#titol {
+				position: absolute;
+				top: 10px; 
+				left: 10px;
+				font-family: Arial;
+				font-size: 20px;
+				z-index: 10;
+				color: white;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+		<div id="titol">Exemple 4 de canvas</div>		
+		<script>
+			
+			// Creem les referències al canvas i al seu context
+			var canvas = document.getElementById( "canvas" );
+			var ctx = canvas.getContext( "2d" );
+			
+			// Fem que el canvas ocupi tota la pantalla
+			var amplada = window.innerWidth;
+			var alcada = window.innerHeight;
+			
+			canvas.width = amplada;
+			canvas.height = alcada;
+			
+			// Creem un array contenir els objectes "espurna"
+			var flama = [];
+			
+			// Creem un objecte "mouse" per guardar-hi les coordenades
+			var mouse = {};
+			
+			// Inicialment pintem la flama al centre de la pantalla
+			mouse.x = amplada / 2;
+			mouse.y = alcada / 2;
+			
+			// Creem les espurnes de la flama
+			var NUM_ESPURNES = 100;
+			
+			for( var i = 0; i < NUM_ESPURNES; i++ )
+			{
+				flama.push( new espurna() );
+			}
+			
+			// Funció que ens retornarà les coordenades del punter dins l'objecte "mouse"
+			function posicioMouse(e)
+			{
+				mouse.x = e.pageX;
+				mouse.y = e.pageY;
+			}
+
+			// Associem l'esdeveniment "mousemove" a la funció anterior
+			document.onmousemove = posicioMouse;
+			
+			// Objecte espurna
+			// ---------------
+			// Cadascuna de les partícules que composen la flama és una espurna
+			//
+			// Propietats
+			//
+			// vX, vY				velocitat a la que es mou en els eixos x i y
+			// pX, pY				posició en els eixos x i y
+			// mida					radi de les espurnes, en píxels
+			// tempsVida			temps de vida que tindrà l'espurna abans d'apagar-se
+			// tempsVidaRestant		temps de vida restant, l'anirem decrementant a cada fotograma
+			// r,g,b				components de color de la flama (seran de color vermell/taronja/groc)
+			//
+			function espurna()
+			{
+				// Determinem una velocitat aleatòriament per l'espurna 
+				// Volem que es mogui cap amunt ràpidament i cap als costats molt a poc a poc
+				
+				// Li donem una mica de velocitat a un costat per donar-hi més realisme i que no pugi totalment vertical
+				this.vX = ( Math.random() * 5 ) - 2.5;
+				// La velocitat vertical serà negativa perquè la flama vagi cap a dalt
+				this.vY = ( Math.random() * 10 ) - 15;
+				
+				// Les coordenades inicials són les del punter del ratolí
+				this.pX = mouse.x;
+				this.pY = mouse.y;
+
+				// Determinem que el radi sigui d'entre 10 i 50 pixels
+				this.mida = ( Math.random() * 40 ) + 10 ;
+				
+				// Temps de vida d'entre 20 i 30 cicles de dibuixat
+				this.tempsVida = ( Math.random() * 10 ) + 20;
+				this.tempsVidaRestant = this.tempsVida;
+				
+				// Triem els components RGB perquè siguin només tons de vermell i marró
+				this.b = Math.round( Math.random() * 255 );
+				this.g = Math.round( Math.random() * ( this.b / 2 ) );
+				this.r = Math.round( Math.random() * ( this.g / 2 ) );
+			}
+			
+			function dibuxarEscena()
+			{
+				// A cada fotograma pintem tot el fons de la pantalla de negre per esborrar l'escena
+				ctx.globalCompositeOperation = "source-over";
+				ctx.fillStyle = "black";
+				ctx.fillRect( 0, 0, amplada, alcada );
+				
+				// Activem el mode de superposició de colors més clars ("lighter")
+				// d'aquesta manera els colors es sumen i aconseguim un millor efecte d'il·lumincació
+				ctx.globalCompositeOperation = "lighter";
+				
+				// A cada fotograma de l'animació redibuixem totes les espurnes
+				for( var i = 0; i < flama.length; i++ )
+				{
+					var e = flama[ i ];					
+					
+					// L'espurna es fa cada cop més transparent segons s'acosta al temps
+					// de vida que té assignat, així queda transparent en el moment d'apagar-se
+					transparencia = Math.round( e.tempsVidaRestant / e.tempsVida * 100 ) / 100;
+					
+					// Omplirem l'espurna amb un degradat radial perquè els marges quedin difuminats
+					// i tingui una aparença més realista
+					var degradat = ctx.createRadialGradient( e.pX, e.pY, 0, e.pX, e.pY, e.mida );
+					var componentsRGB = e.r + ", " + e.g + ", " + e.b;
+					degradat.addColorStop( 0, "rgba(" + componentsRGB + ", " + transparencia + ")" );
+					degradat.addColorStop( 0.5, "rgba(" + componentsRGB + ", " + transparencia + ")" );
+					degradat.addColorStop( 1, "rgba(" + componentsRGB + ", 0)" );
+					ctx.fillStyle = degradat;
+
+					// Per veure la diferència sense el degradat, descomenteu la línia següent
+					// que assigna directament un color sòlid per RGB
+					// ctx.fillStyle = "rgba( " + e.r + "," + e.g + "," + e.b + "," + transparencia + " )";
+					
+					// Necessari per poder traçar un arc idenpendent per cada espurna
+					ctx.beginPath();
+
+					// Tracem un cercle (de 0 a 2*PI = 360º) a les coordenades pX, pY del radi donat
+					ctx.arc( e.pX, e.pY, e.mida, 0, 2 * Math.PI );
+					
+					// Dibuixem el cercle que hem traçat omplert de color (el del degradat)
+					ctx.fill();
+					
+					// Decrementem el temps de vida de la flama perquè no ascendeixi sense control 
+					e.tempsVidaRestant--;
+					
+					// Cada cop que la dibuixem l'espurna es fa una mica més petita
+					e.mida = e.mida - 1;
+					
+					// Desplaçem l'espurna a la seva nova posició segons la velocitat x i y
+					e.pX += e.vX;
+					e.pY += e.vY;
+					
+					// Quan una espurna s'ha apagat, en creem una de nova a la mateixa 
+					// posició de l'array perquè la flama no s'apagui
+					if ( e.tempsVidaRestant < 0 || e.mida < 0 )
+					{						
+						flama[ i ] = new espurna();
+					}
+				}
+			}
+			
+			setInterval( dibuxarEscena, 30 );
+			
+		</script>
+	</body>
+</html>

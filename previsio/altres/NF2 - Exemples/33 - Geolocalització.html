@@ -1,0 +1,82 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Geolocalització</title>
+		<style>
+			div {
+				font-family: "Courier new";
+			}
+		</style>
+	</head>
+	<body>
+		<button onclick="mostraCoordenades()">Obtenir posició</button>
+		<p>
+			<div id="longitud"></div>
+			<div id="latitud"></div>
+		</p>
+		
+		<script>
+			// Variables per accedir als objectes més ràpidament
+			lon = document.getElementById( "longitud" );
+			lat = document.getElementById( "latitud" );
+			
+			// Funció que es cridarà quan l'usuari premi el botó per saber la ubicació
+			function mostraCoordenades()
+			{
+				// Comprovem si el navegador suporta o no geolocalització
+				if ( navigator.geolocation )
+				{
+					// Demanem la ubicació amb getCurrentPosition
+					// El primer paràmetre és la funció a cridar quan rebem la ubicació
+					// El segon paràmetre és la funció a cridar si es produeix un error
+					
+					navigator.geolocation.getCurrentPosition( mostraPosicio, mostraError );
+					
+					/*
+					També ho hauriem pogut fer amb una funció anònima:
+					
+					navigator.geolocation.getCurrentPosition( function ( pos ) { 
+						lon.innerHTML = "Longitud: " + pos.coords.longitude;
+						lat.innerHTML = "Latitud : " + pos.coords.latitude;
+					}, mostraError );
+					*/
+				}
+			}
+			
+			// Funció que es cridarà quan es rebi la ubicació de geolocalització
+			function mostraPosicio( pos )
+			{
+				// El paràmetre que rebem conté un objecte amb propietats que ens
+				// permeten saber la ubicació
+				// Segons el dispositiu, obtindrem més o menys dades de posicionament
+				// https://developer.mozilla.org/en-US/docs/Web/API/Coordinates
+				
+				lon.innerHTML = "Longitud: " + pos.coords.longitude;
+				lat.innerHTML = "Latitud : " + pos.coords.latitude;
+			}
+			
+			// Funció que es cridarà quan no es pugui obtenir la ubicació de geolocalització
+			function mostraError( error )
+			{
+				// Podem saber el codi de l'error llegint la propietat "code"
+				// https://developer.mozilla.org/en-US/docs/Web/API/PositionError
+				
+				switch( error.code )
+				{
+					case error.PERMISSION_DENIED:
+						lon.innerHTML = "L'usuari ha denegat l'accés a la ubicació";
+						break;
+						
+					case error.POSITION_UNAVAILABLE:
+						lon.innerHTML = "Informació d'ubicació no disponible";
+						break;
+						
+					case error.TIMEOUT:
+						lon.innerHTML = "S'ha excedit el temps d'espera per obtenir la ubicació";
+						break;
+				}
+			}
+			
+		</script>
+	</body>
+</html>

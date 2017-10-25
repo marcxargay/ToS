@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Canvas</title>
+	<style type="text/css">
+		@font-face{
+			font-family: 'Impact';
+			src: url('assets/impact/unicode.impact.ttf');
+			src: url('assets/impact/impact.ttf');
+		}
+		body{
+			background-color: #e0e0e0;
+			font-family: arial;
+			font-size: 14px;
+		}
+		#canvas{
+			border:4px solid black;
+		}
+		#paramatres{
+			top:0px;
+			width: 345px;
+			position: absolute;
+			left: 530px;
+			margin-bottom: 10px;
+			background-color: #a8a8a8;
+			padding: 5px;
+			border: 1px solid #828282;
+			margin-top: 9px;
+			border-radius: 10px;
+		}
+		.imgClass{
+			height: 100px;
+			width: 100px;
+			background-size: cover;
+			display: inline-block;
+			position: relative;
+			border-radius: 10%;
+			border: 1px solid black;
+		}
+		.imgClass:hover{
+			cursor: pointer;
+		}
+		.inln-block{
+			display:inline-block;
+		}
+		.px{
+			font-size: 13px;
+			top:-8px;
+			position: relative;
+		}
+		#download {
+		    float:left;
+		    cursor:pointer;
+		    color:#000;
+		    padding:3px;
+		}
+		#download:hover {
+		    color:#fff;
+		}
+	</style>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500"></canvas>
+
+<div id="paramatres" class="inln-block">
+	<input type="text" id="text1">
+	<input type="color" id="c1" value="#ffffff">
+	<input type="color" id="c2"><br>
+	<input type="range" id="r1"><span id="m1" class="px">0px</span>
+	<input type="range" id="r2"><span id="p1" class="px">0px</span><br>
+	<input type="text" id="text2">
+	<input type="checkbox" name="cb1" id="cb1">Forçar majuscules<br>
+
+	<input type="text" id="text3">
+	<input type="color" id="c3" value="#ffffff">
+	<input type="color" id="c4"><br>
+	<input type="range" id="r3"><span id="m2" class="px">0px</span>
+	<input type="range" id="r4"><span id="p2" class="px">0px</span><br>
+	<input type="text" id="text4">
+	<input type="checkbox" name="cb2" id="cb2">Forçar majuscules<br>
+	<a id="download">Download Imatge</a>
+</div>
+
+<script type="text/javascript" src="index.js"></script>
+
+</body>
+</html>

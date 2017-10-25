@@ -1,0 +1,91 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Emmagatzematge local (1)</title>
+		<style>
+
+		</style>
+	</head>
+	<body>
+		<h1>Pàgina 1</h1>
+		<p>Has clicat el botó <span id="comptador_1"></span> vegades en total</p>
+		<p>Has clicat el botó <span id="comptador_2"></span> vegades aquesta sessió</p>
+		<p>
+			<button onclick="comptaClics()">Fes clic</button>
+		</p>
+		<p>
+			<button onclick="esborra(1)">Esborrar comptador global</button>
+			<button onclick="esborra(2)">Esborrar comptador de sessió</button>
+		</p>
+		<a href="34b - Emmagatzemage local.html">Anar a la pàgina 2</a>
+		<script>
+			
+			// Llegim el valor de "clics" guardat al localStorage i sessionStorage
+			// Com que sempre ens retorna una cadena (string) l'hem de converir
+			// a numeric amb Number o parseInt
+			clics1 = Number( localStorage.clics );
+			clics2 = Number( sessionStorage.clics );
+			
+			// Si és el primer cop que obrim la pàgina, el número de clics serà NaN
+			// per tant fem la conversió al número 0
+			clics1 = isNaN(clics1) ? 0 : clics1;
+			clics2 = isNaN(clics2) ? 0 : clics2;
+			
+			// Escrivim els valor a les etiquetes corresponents
+			actualitzaValors();
+			
+			// Funció que incrementa el número de clics i els mostra
+			function comptaClics()
+			{
+				// Incrementem les variables que compten el número de clics
+				clics1++;
+				clics2++;
+
+				// Guardem el número de clics a l'emmagatzematge local
+				//
+				// localStorage: mantindrà el valor encara que tanquem el navegador, ens serveix per
+				// recuperar el seu valor en qualsevol moment posterior
+				//
+				// sessionStorage: manté el valor mentre es mantingui oberts la finestra actual
+				// encara que naveguem cap a una altra pàgina
+				
+				localStorage.clics = clics1;
+				sessionStorage.clics = clics2;
+
+				// Escrivim els valor a les etiquetes corresponents
+				actualitzaValors();
+			}
+			
+			// Funció que escriu el valor de cada comptador a una etiqueta
+			function actualitzaValors()
+			{
+				document.getElementById( "comptador_1" ).innerHTML = localStorage.clics;
+				document.getElementById( "comptador_2" ).innerHTML = sessionStorage.clics;
+			}
+			
+			// Funció que esborra un comptador, local (1) o de sessió (2)
+			function esborra( tipus )
+			{
+				switch( tipus )
+				{
+					case 1: 
+						// Eliminem l'element del localStorage
+						localStorage.removeItem( "clics" ); 
+						// Reiniciem la variable local
+						clics1 = 0;
+						break;
+						
+					case 2: 
+						// Eliminem l'element del sessionStorage
+						sessionStorage.removeItem( "clics" ); 
+						// Reiniciem la variable local
+						clics2 = 0;
+						break;
+				}
+				
+				// Escrivim els valor a les etiquetes corresponents
+				actualitzaValors();
+			}
+		</script>
+	</body>
+</html>

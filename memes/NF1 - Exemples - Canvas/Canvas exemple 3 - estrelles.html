@@ -1,0 +1,113 @@
+<html>
+	<head>
+		<style>
+			body {
+				margin: 0px;
+				background-color: black;
+				overflow: hidden;
+			} 
+			#titol {
+				position: absolute;
+				top: 10px;
+				left: 10px;
+				font-family: Arial;
+				font-size: 20px;
+				z-index: 10;
+				color: white;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="canvas"></canvas>
+		<div id="titol">Exemple 3 de canvas</div>		
+		<script>
+			imgFons = new Image();
+			imgFons.src = "outer-space.jpg";
+			
+			midaEstrella = 5;
+			
+			// Creem les referències al canvas i al seu context
+			var canvas = document.getElementById( "canvas" );
+			var ctx = canvas.getContext( "2d" );
+			
+			// Fem que el canvas ocupi tota la pantalla
+			var amplada = window.innerWidth;
+			var alcada = window.innerHeight;
+			
+			canvas.width = amplada;
+			canvas.height = alcada;
+			angle = 0;
+			
+			// Creem un array contenir els objectes "estrella"
+			var espai = [];
+			var inici = 0;
+			
+			// Creem les estrelles dins l'array "espai"
+			var NUM_ESTRELLES = 100;
+			for( var i = 0; i < NUM_ESTRELLES; i++ )
+			{
+				espai.push( new estrella() );
+			}
+			
+			function estrella()
+			{
+				this.vX = ( Math.random() * 2 ) - 1;
+				this.vY = ( Math.random() * 2 ) - 1;
+				this.pX = amplada / 2;
+				this.pY = alcada / 2;
+			}
+			
+			function dibuixarEscena()
+			{
+				ctx.fillStyle = "black";
+				ctx.fillRect( 0, 0, amplada, alcada );
+				
+				// Descomentar per utilitzar una imatge de fons enlloc de fons negre
+				// ctx.drawImage( imgFons, 0, 0, amplada, alcada );
+
+				if ( inici < espai.length ) inici++;
+				
+				for( var i = 0; i < inici; i++ )
+				{
+					var e = espai[ i ];
+
+					// Pintem cada estrella com un rectangle de 1x1 píxels
+					ctx.fillStyle = "white";
+					ctx.fillRect( e.pX, e.pY, midaEstrella, midaEstrella );
+
+					// Desplaçem l'estrella a la seva nova posició segons la velocitat x i y
+					e.pX += e.vX;
+					e.pY += e.vY;
+					
+					// Accelerem lleugerament les estrelles segons se'ns acosten
+					e.vX = e.vX * 1.025;
+					e.vY = e.vY * 1.025;
+					
+					// Quan una estrella surt de la pantalla en creem una de 
+					// nova a la mateixa posició de l'array
+					if ( ( e.pX < 0 ) || ( e.pX > amplada ) || ( e.pY < 0 ) || ( e.pY > alcada ) )
+					{						
+						espai[ i ] = new estrella();
+					}
+				}
+				
+				// Descomentar fer girar en canvas sobre el seu centre
+				// document.getElementById("canvas").style.WebkitTransform = "rotate("+(angle--)+"deg)";
+				
+				// quan sigui necessari redibuixar la pantalla, el navegador esperarà 
+				// al proper sincronisme vertical i executarà dibuixarEscena()
+				requestAnimationFrame( dibuixarEscena );
+			}
+			
+			// MÈTODE 1 - setInterval() o setTimeout()
+			// Actualitzem la pantalla cada 30ms			
+			//setInterval( dibuixarEscena, 30 );
+			
+			// MÈTODE 2 - requestAnimationFrame
+			// fem la primera crida a requestAnimationFrame per començar la animació
+			// i a la funció ja farem les següents crides a requestAnimationFrame
+			requestAnimationFrame( dibuixarEscena );
+			
+		</script>
+	</body>
+</html>

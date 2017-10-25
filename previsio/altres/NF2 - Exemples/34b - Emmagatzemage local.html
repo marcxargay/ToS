@@ -1,0 +1,57 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Emmagatzematge local (1)</title>
+		<style>
+
+		</style>
+	</head>
+	<body>
+		<h1>Pàgina 2</h1>
+		<p>Has clicat el botó <span id="comptador_1"></span> vegades en total</p>
+		<p>Has clicat el botó <span id="comptador_2"></span> vegades aquesta sessió</p>
+		<p>
+			<button onclick="comptaClics()">Fes clic</button>
+		</p>
+		<a href="34a - Emmagatzemage local.html">Anar a la pàgina 1</a>
+		<script>
+			// Llegim el valor de "clics" guardat al localStorage i sessionStorage
+			// Com que sempre ens retorna una cadena (string) l'hem de converir
+			// a numeric amb Number o parseInt
+			clics1 = Number( localStorage.clics );
+			clics2 = Number( sessionStorage.clics );
+			
+			// Si és el primer cop que obrim la pàgina, el número de clics serà NaN
+			// per tant fem la conversió al número 0
+			clics1 = isNaN(clics1) ? 0 : clics1;
+			clics2 = isNaN(clics2) ? 0 : clics2;
+			
+			// Escrivim cada valor a una etiqueta
+			document.getElementById( "comptador_1" ).innerHTML = clics1;
+			document.getElementById( "comptador_2" ).innerHTML = clics2;
+			
+			// Funció que incrementa el número de clics i els mostra
+			function comptaClics()
+			{
+				// Incrementem les variables que compten el número de clics
+				clics1++;
+				clics2++;
+
+				// Guardem el número de clics a l'emmagatzematge local
+				//
+				// localStorage: mantindrà el valor encara que tanquem el navegador, ens serveix per
+				// recuperar el seu valor en qualsevol moment posterior
+				//
+				// sessionStorage: manté el valor només per la finestra actual, ens serveix per fer
+				// que una variable es mantingui si recarreguem la pàgina
+				
+				localStorage.clics = clics1;
+				sessionStorage.clics = clics2;
+
+				// Escrivim cada valor a una etiqueta
+				document.getElementById( "comptador_1" ).innerHTML = clics1;
+				document.getElementById( "comptador_2" ).innerHTML = clics2;
+			}
+		</script>
+	</body>
+</html>

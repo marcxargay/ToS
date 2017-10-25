@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Previsió</title>
+	<script type="text/javascript" src="assets/js/jquery.min.js"></script>
+	<script type="text/javascript" src="assets/js/jquery-ui-1.12.1/jquery-ui.js"></script>
+	<script type="text/javascript" src="assets/js/index.js"></script>
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+	<script type="text/javascript">getTemps()</script>
+	 <select id="city" onChange="getTemps()">
+		<option value="761600">Girona</option>
+		<option value="615702">Paris</option>
+		<option value="753692">Barcelona</option>
+		<option value="1118370">Tokyo</option>
+		<option value="44418">Londres</option>
+	</select>
+	<div id="temps">
+		<div id="info">
+			<div id="nom-data">
+				<div id="nom"></div>
+				<div id="rellotge"></div>
+				<div id="date"></div>
+			</div>
+			<div id="actual">
+				<img id="imgTemps" src="">
+				<div id="temperatura"></div>
+			</div>
+		</div>
+		<div id="data">
+			<div id="presio"></div>
+			<div id="humitat"></div>
+			<div id="sol">
+				<div id="sortida"></div>
+				<div id="posta"></div>
+			</div>
+		</div>
+		<div id="previsio">
+			<div id="p1"></div>
+			<div id="p2"></div>
+			<div id="p3"></div>
+		</div>
+	</div>
+</body>
+</html>

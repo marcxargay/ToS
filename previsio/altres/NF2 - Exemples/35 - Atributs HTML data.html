@@ -1,0 +1,112 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Atributs HTML data-*</title>
+		<style>
+			h1 {
+				font-family: Arial;
+				font-size: 48px;
+			}
+			
+			.producte {
+				width: 130px;
+				height: 130px;
+				border: 1px solid black;
+				float: left;
+				margin: 0px 10px 20px 0px;
+				cursor: pointer;
+			}
+			
+			.producte:hover {
+				box-shadow: 0px 0px 20px black;
+			}
+			
+			.unitats {
+				font-family: Arial;
+				font-size: 20px;
+				line-height: 30px;
+				font-weight: bold;
+				text-align: center;
+				color: white;
+				background-color: green;
+				width: 30px;
+				height: 30px;
+				border-radius: 20px;
+				position: relative;
+				top: -7px;
+				left: -7px;
+				border: 2px solid white;
+			}
+			
+			#informacio {
+				clear: both;
+				font-family: Arial;
+				font-size: 20px;
+				background-color: lightgreen;
+				width: 300px;
+				height: 70px;
+				border-radius: 32px;
+				border: 1px solid black;
+				padding: 1em;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Selecciona un producte</h1>
+		<div class="producte" id="producte1" data-nom-producte="Patates fregides" data-preu="2.00€"></div>
+		<div class="producte" id="producte2" data-nom-producte="Frankfurt" data-preu="2.50€"></div>
+		<div class="producte" id="producte3" data-nom-producte="Pizza (porció)" data-preu="2.00€"></div>
+		<div class="producte" id="producte4" data-nom-producte="Refresc" data-preu="1.50€"></div>
+		<div class="producte" id="producte5" data-nom-producte="Hamburguesa" data-preu="3.00€"></div>
+		<div id="informacio"></div>
+		
+		<script>
+			// Busquem tots els productes
+			var llista = document.getElementsByClassName( "producte" );
+			
+			for ( i = 0; i < llista.length; i++ )
+			{
+				llista[ i ].style.background = "url(prod/producte" + ( i + 1 ) + ".png)";
+				
+				// Afegim un esdeveniment clic a cada producte
+				llista[ i ].onclick = function () {
+					llegirInfoProducte( this )
+					};
+				
+				// Calculem un número d'unitats (estoc) a l'atzar
+				unitats = Math.floor( Math.random() * 8 ) + 2;
+				
+				// Mètode 1
+				llista[ i ].setAttribute( "data-en-estoc", unitats );
+
+				// Mètode 2
+				llista[ i ].dataset.enEstoc = unitats;
+				
+				// Creem un element per mostrar el número d'unitats
+				var numUnitats = document.createElement( "div" );
+				numUnitats.className = "unitats";
+				numUnitats.innerHTML = unitats;
+				llista[ i ].appendChild( numUnitats );
+			}
+			
+			function llegirInfoProducte( item )
+			{
+				info = document.getElementById( "informacio" );
+				
+				// Mètode 1				
+				nom  = item.getAttribute( "data-nom-producte" );
+				preu = item.getAttribute( "data-preu" );
+				unitats = item.getAttribute( "data-en-estoc" );
+				
+				// Mètode 2 
+				nom  = item.dataset.nomProducte;
+				preu = item.dataset.preu;
+				unitats = item.dataset.enEstoc;
+				
+				info.innerHTML = "<b>" + nom + "</b> (" + preu + ")<br><br>En queden " + unitats;
+			}
+			
+		</script>
+		
+	</body>
+</html>

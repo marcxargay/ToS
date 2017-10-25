@@ -1,0 +1,110 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Pràctica 9</title>
+		<style>
+			html {
+				background-color: rgb(0,0,50);
+				margin: 20px;
+				color: white;
+				font-family: Ubuntu;
+				font-size: 14pt;
+			}
+			
+			#eltemps {
+				position: relative;
+				width: 400px;
+				height: 200px;
+				border: 2px solid white;
+				border-radius: 50px;
+				box-shadow: 0px 0px 20px white, 0px 0px 50px rgba(0,0,50,0.75) inset;
+				padding: 20px;
+				margin-bottom: 30px;
+				font-size: 20px;
+				text-shadow: 4px 4px 4px black;
+				background: -webkit-linear-gradient(-45deg, #031666 0%,#3b76a5 26%,#a5bed3 56%,#2968b5 77%,#0c295b 100%);			
+				z-index: -2;
+			}
+			
+			#unitatsTemp {
+				font-size: 40px;
+				position: absolute;
+				right: 10px;
+				top: 120px;
+			}
+
+			#temperatura {
+				font-size: 140px;
+				position: absolute;
+				right: 60px;
+				top: 75px;
+			}
+
+			#ubicacio {
+				font-size: 70px;				
+				position: absolute;
+				left: 20px;
+				top: 10px;
+			}
+
+			#imgTemps {
+				position: absolute;
+				left: 20px;
+				bottom: 0px;
+				width: 220px;
+				z-index: -1;
+			}
+			
+			select {
+				padding: 2px 4px;
+				border-radius: 16px;
+				background-color: white;
+				color: black;
+				font-size: 14pt;
+				width: 335px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="eltemps">
+			<div id="ubicacio"></div>
+			<div id="temperatura"></div><div id="unitatsTemp">ºC</div>
+			<img id="imgTemps" src="">
+		</div>
+		Previsió per&nbsp;
+		<select id="ciutat" onChange="llegeixTemps()">
+			<option value="761600">Girona</option>
+			<option value="753692">Barcelona</option>
+			<option value="1118370">Tokyo</option>
+			<option value="2459115">New York</option>
+		</select>
+		<script>
+			function llegeixTemps()
+			{
+				xmlhttp = new XMLHttpRequest();
+				xmlhttp.onreadystatechange = function() 
+				{
+					if ( xmlhttp.readyState == 4 && xmlhttp.status == 200 )
+					{
+						resposta = JSON.parse( xmlhttp.responseText );
+						
+						escriureValor(resposta);
+					}
+				}
+				ciutat = document.getElementById("ciutat").value;
+				xmlhttp.open("GET", "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid=%27" + ciutat + "%27%20and%20u=%27c%27&format=json", true);
+				xmlhttp.send();				
+			}
+			
+			function escriureValor(temps)
+			{
+				e = temps.query.results.channel;
+				document.getElementById("ubicacio").innerHTML = e.location.city;
+				document.getElementById("temperatura").innerHTML = e.item.condition.temp;
+				document.getElementById("imgTemps").src = "icones/" + e.item.condition.code + ".png";
+			}
+			
+			llegeixTemps();
+		</script>
+	</body>
+</html>

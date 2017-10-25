@@ -1,0 +1,43 @@
+html{
+	font-family: arial;
+}
+table {
+	text-align: center;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+.white{
+	background-color: #eee;
+}
+.black{
+	background-color: #000;
+}
+#board{
+	outline: 2px solid #000;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top:100px;
+}
+
+.piece{
+	/*position: absolute !important;*/ 
+	font-size: 50px;
+	text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff;
+	z-index:2;
+}
+#marcador{
+	margin-right: auto;
+	margin-left: auto;
+	width: 500px;
+	padding: 20px;
+	border-radius: 10px;
+	background-color:#bbb;
+	margin-top:40px;
+	text-align: center;
+}
+#start{
+	border-radius: 5px;
+	background-color: black;
+	color:white;
+	border:0;
+}
